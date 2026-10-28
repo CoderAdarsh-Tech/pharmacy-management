@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f2f7f4">
+  <title>MediCare | Pharmacy Management</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <section id="login-screen" class="login-screen">
+    <div class="login-art">
+      <div class="brand brand-light"><span class="brand-mark">✚</span><span>MediCare</span></div>
+      <div class="login-message">
+        <span class="eyebrow">PHARMACY OPERATIONS, SIMPLIFIED</span>
+        <h1>Care better.<br><em>Manage smarter.</em></h1>
+        <p>A single workspace for inventory, billing and patient records.</p>
+        <div class="login-stat-row"><div><strong>01</strong><span>Inventory</span></div><div><strong>02</strong><span>Billing</span></div><div><strong>03</strong><span>Insights</span></div></div>
+      </div>
+      <div class="decor-circle circle-one"></div><div class="decor-circle circle-two"></div>
+    </div>
+    <div class="login-panel">
+      <div class="login-top"><span class="status-dot"></span> SECURE ADMIN ACCESS</div>
+      <h2>Welcome back</h2><p class="muted">Sign in to open your pharmacy dashboard.</p>
+      <form id="login-form" class="form-stack">
+        <label>Username<input name="username" autocomplete="username" value="admin" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" value="admin123" required></label>
+        <button class="btn btn-primary btn-full" type="submit">Sign in <span>→</span></button>
+      </form>
+      <div class="demo-note"><strong>Demo account</strong><span>Username: admin</span><span>Password: admin123</span></div>
+      <p class="login-foot">School project demo · MediCare Pharmacy</p>
+    </div>
+  </section>
+
+  <div id="app" class="app-shell hidden">
+    <aside id="sidebar" class="sidebar">
+      <div class="brand"><span class="brand-mark">✚</span><span>MediCare<span class="brand-sub">PHARMACY SYSTEM</span></span></div>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-item active" data-page="dashboard"><span>▦</span> Dashboard</button>
+        <button class="nav-item" data-page="inventory"><span>▤</span> Medicine inventory <b id="nav-stock-count">0</b></button>
+        <button class="nav-item" data-page="billing"><span>▧</span> Billing & invoices</button>
+        <button class="nav-item" data-page="customers"><span>♙</span> Customers</button>
+        <button class="nav-item" data-page="suppliers"><span>♧</span> Suppliers</button>
+        <button class="nav-item" data-page="prescriptions"><span>▧</span> Prescriptions</button>
+        <button class="nav-item" data-page="reports"><span>▥</span> Sales reports</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card"><span class="help-icon">✦</span><strong>Need a hand?</strong><p>Keep stock updated and review alerts daily.</p></div>
+        <button id="logout-btn" class="nav-item logout"><span>↪</span> Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button id="mobile-menu" class="icon-btn mobile-menu" aria-label="Toggle menu">☰</button>
+        <div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumb-page">Dashboard</strong></div>
+        <div class="top-actions"><span class="today-label" id="today-label"></span><button id="theme-toggle" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">☾</button><div class="user-avatar">PA</div><div class="user-meta"><strong id="user-name">Pharmacy Admin</strong><span>Administrator</span></div></div>
+      </header>
+
+      <div class="page-wrap">
+        <section id="page-dashboard" class="page active">
+          <div class="page-heading"><div><span class="eyebrow">OVERVIEW</span><h1>Good day, <span id="welcome-name">Admin</span> <span class="wave">✦</span></h1><p>Here's what's happening at your pharmacy today.</p></div><button class="btn btn-primary" data-goto="billing">＋ Create new bill</button></div>
+          <div class="metric-grid">
+            <article class="metric-card"><div class="metric-top"><span>Total medicines</span><span class="metric-icon mint">▤</span></div><strong id="metric-medicines">—</strong><div class="metric-foot"><span class="tiny-dot green"></span> Products in inventory</div></article>
+            <article class="metric-card"><div class="metric-top"><span>Sales today</span><span class="metric-icon blue">₹</span></div><strong id="metric-today">₹0.00</strong><div class="metric-foot">Today's recorded revenue</div></article>
+            <article class="metric-card"><div class="metric-top"><span>Low stock alerts</span><span class="metric-icon amber">!</span></div><strong id="metric-low">—</strong><div class="metric-foot"><span class="tiny-dot amber-dot"></span> 10 units or fewer</div></article>
+            <article class="metric-card"><div class="metric-top"><span>Expiring soon</span><span class="metric-icon rose">◷</span></div><strong id="metric-expiring">—</strong><div class="metric-foot">Within the next 30 days</div></article>
+          </div>
+          <div class="dashboard-grid">
+            <article class="panel sales-panel"><div class="panel-heading"><div><h3>Sales overview</h3><p>Revenue for the last 7 days</p></div><span class="tag tag-green">Last 7 days</span></div><div class="chart-wrap"><canvas id="sales-chart" aria-label="Sales chart"></canvas><div id="chart-empty" class="chart-empty hidden">Sales will appear here after you create invoices.</div></div></article>
+            <article class="panel alerts-panel"><div class="panel-heading"><div><h3>Stock alerts</h3><p>Items that need attention</p></div><span class="alert-count" id="alert-count">0</span></div><div id="alerts-list" class="alert-list"></div><button class="text-btn" data-goto="inventory">View inventory →</button></article>
+          </div>
+          <article class="panel"><div class="panel-heading"><div><h3>Recent transactions</h3><p>Latest invoices from your pharmacy</p></div><button class="text-btn" data-goto="reports">View all sales →</button></div><div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Date</th><th class="align-right">Amount</th><th>Status</th></tr></thead><tbody id="recent-sales-body"></tbody></table></div></article>
+        </section>
+
+        <section id="page-inventory" class="page">
+          <div class="page-heading"><div><span class="eyebrow">STOCK CONTROL</span><h1>Medicine inventory</h1><p>Manage medicines, quantities, batches and expiry dates.</p></div><button id="add-medicine-btn" class="btn btn-primary">＋ Add medicine</button></div>
+          <div class="toolbar"><div class="search-box"><span>⌕</span><input id="medicine-search" placeholder="Search medicine, category or batch..." aria-label="Search medicines"></div><select id="category-filter" aria-label="Filter category"><option value="">All categories</option></select><span class="toolbar-count" id="inventory-count">0 items</span></div>
+          <article class="panel"><div class="table-wrap"><table><thead><tr><th>Medicine</th><th>Batch no.</th><th>Category</th><th>Expiry date</th><th>Unit price</th><th>Stock</th><th>Supplier</th><th>Actions</th></tr></thead><tbody id="inventory-body"></tbody></table></div><div id="inventory-empty" class="empty-state hidden"><span>▤</span><strong>No medicines found</strong><p>Try another search or add a medicine.</p></div></article>
+        </section>
+
+        <section id="page-billing" class="page">
+          <div class="page-heading"><div><span class="eyebrow">CHECKOUT</span><h1>Billing & invoices</h1><p>Create a bill and automatically update stock quantities.</p></div></div>
+          <div class="billing-layout">
+            <article class="panel billing-main"><div class="panel-heading"><div><h3>New invoice</h3><p>Add items to the customer's bill.</p></div><span class="tag tag-green">New sale</span></div>
+              <div class="billing-fields"><label>Customer<select id="bill-customer"><option value="">Walk-in customer</option></select></label><label>Customer name (optional)<input id="walkin-name" placeholder="Enter name for walk-in customer"></label></div>
+              <div class="add-item-row"><label>Medicine<select id="bill-medicine"><option value="">Select medicine</option></select></label><label class="qty-field">Qty<input id="bill-quantity" type="number" min="1" step="1" value="1"></label><button id="add-to-cart" class="btn btn-secondary">Add item</button></div>
+              <div class="table-wrap cart-table"><table><thead><tr><th>Item</th><th>Price</th><th>Qty</th><th>Total</th><th></th></tr></thead><tbody id="cart-body"></tbody></table></div>
+              <div class="empty-cart" id="empty-cart">Your invoice is empty. Add a medicine to begin.</div>
+              <div class="billing-bottom"><label>Discount (%)<input id="bill-discount" type="number" min="0" max="100" value="0"></label><label>GST (%)<input id="bill-gst" type="number" min="0" max="100" value="5"></label><div class="bill-total"><span>Grand total</span><strong id="bill-grand-total">₹0.00</strong></div></div>
+              <button id="complete-sale" class="btn btn-primary btn-full">Complete sale & generate invoice →</button>
+            </article>
+            <aside class="panel bill-summary"><span class="summary-icon">▧</span><h3>Invoice summary</h3><p class="muted">A quick overview of the current bill.</p><div class="summary-line"><span>Items</span><strong id="summary-items">0</strong></div><div class="summary-line"><span>Subtotal</span><strong id="summary-subtotal">₹0.00</strong></div><div class="summary-line"><span>Discount</span><strong id="summary-discount">−₹0.00</strong></div><div class="summary-line"><span>GST</span><strong id="summary-gst">₹0.00</strong></div><div class="summary-note">Stock is checked again on the server before a sale is saved.</div></aside>
+          </div>
+          <article class="panel invoice-result hidden" id="invoice-result"></article>
+        </section>
+
+        <section id="page-customers" class="page">
+          <div class="page-heading"><div><span class="eyebrow">PEOPLE</span><h1>Customers</h1><p>Keep customer contact details and purchase history together.</p></div><button id="add-customer-btn" class="btn btn-primary">＋ Add customer</button></div>
+          <div class="toolbar"><div class="search-box"><span>⌕</span><input id="customer-search" placeholder="Search customers..." aria-label="Search customers"></div><span class="toolbar-count" id="customer-count">0 customers</span></div>
+          <article class="panel"><div class="table-wrap"><table><thead><tr><th>Customer</th><th>Phone</th><th>Email</th><th>Orders</th><th>Total spent</th><th>Actions</th></tr></thead><tbody id="customers-body"></tbody></table></div><div id="customers-empty" class="empty-state hidden"><span>♙</span><strong>No customers yet</strong><p>Add a customer to keep their details.</p></div></article>
+        </section>
+
+        <section id="page-suppliers" class="page">
+          <div class="page-heading"><div><span class="eyebrow">PARTNERS</span><h1>Suppliers</h1><p>Manage supplier contact information and stock sources.</p></div><button id="add-supplier-btn" class="btn btn-primary">＋ Add supplier</button></div>
+          <div class="toolbar"><div class="search-box"><span>⌕</span><input id="supplier-search" placeholder="Search suppliers..." aria-label="Search suppliers"></div><span class="toolbar-count" id="supplier-count">0 suppliers</span></div>
+          <article class="panel"><div class="table-wrap"><table><thead><tr><th>Supplier</th><th>Phone</th><th>Email</th><th>Address</th><th>Medicines</th><th>Actions</th></tr></thead><tbody id="suppliers-body"></tbody></table></div><div id="suppliers-empty" class="empty-state hidden"><span>♧</span><strong>No suppliers yet</strong><p>Add supplier details to get started.</p></div></article>
+        </section>
+
+        <section id="page-prescriptions" class="page">
+          <div class="page-heading"><div><span class="eyebrow">DOCUMENTS</span><h1>Prescription records</h1><p>Upload prescription images for this local school-project demo.</p></div></div>
+          <div class="two-col">
+            <article class="panel upload-panel"><div class="upload-illustration">↥</div><h3>Upload a prescription</h3><p class="muted">Image files only · Maximum 5 MB</p><form id="prescription-form" class="form-stack"><label>Patient name<input name="patient_name" placeholder="Patient name"></label><label class="file-input-label">Prescription image<input name="prescription" type="file" accept="image/png,image/jpeg,image/webp,image/gif" required></label><button class="btn btn-primary btn-full" type="submit">Upload record</button></form><p class="privacy-note">Demo note: use fictional/sample patient data only. This project is not designed for real medical records.</p></article>
+            <article class="panel"><div class="panel-heading"><div><h3>Uploaded records</h3><p>Recent prescription image uploads</p></div></div><div id="prescription-list" class="record-list"></div></article>
+          </div>
+        </section>
+
+        <section id="page-reports" class="page">
+          <div class="page-heading"><div><span class="eyebrow">ANALYTICS</span><h1>Sales reports</h1><p>Review invoices and total recorded revenue.</p></div><button id="export-sales-btn" class="btn btn-secondary">↓ Export CSV</button></div>
+          <div class="metric-grid report-metrics"><article class="metric-card"><div class="metric-top"><span>Total recorded sales</span><span class="metric-icon blue">₹</span></div><strong id="report-total-sales">₹0.00</strong><div class="metric-foot">All saved invoices</div></article><article class="metric-card"><div class="metric-top"><span>Invoices</span><span class="metric-icon mint">▧</span></div><strong id="report-invoice-count">0</strong><div class="metric-foot">Recorded transactions</div></article></div>
+          <div class="toolbar"><div class="search-box"><span>⌕</span><input id="sales-search" placeholder="Search invoice or customer..." aria-label="Search sales"></div></div>
+          <article class="panel"><div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Date</th><th>Subtotal</th><th>Discount</th><th>GST</th><th class="align-right">Total</th><th>Action</th></tr></thead><tbody id="sales-body"></tbody></table></div><div id="sales-empty" class="empty-state hidden"><span>▥</span><strong>No sales recorded</strong><p>Complete a bill to see it here.</p></div></article>
+        </section>
+
+        <section id="page-about" class="page">
+          <div class="page-heading"><div><span class="eyebrow">PROJECT INFORMATION</span><h1>About this project</h1><p>A school project demonstration of pharmacy operations.</p></div></div>
+          <article class="panel about-panel"><div class="about-symbol">✚</div><h2>MediCare Pharmacy Management System</h2><p>This web application demonstrates medicine inventory, billing, customer and supplier records, stock alerts, sales reporting and prescription image upload using a browser-based frontend and a Node.js/SQLite backend.</p><div class="credits"><span class="eyebrow">PROJECT CREDITS</span><div class="credit-person"><span>GS</span><div><strong>Gaurav Singh Bajetha</strong><small>12613038</small></div></div><div class="credit-person"><span>AK</span><div><strong>Aditya Kumar</strong><small>12613103</small></div></div><div class="credit-person"><span>AK</span><div><strong>Adarsh Kumar</strong><small>12613193</small></div></div></div><p class="privacy-note">Educational demonstration only. Not intended for dispensing decisions, real patient data, or production pharmacy operations.</p></article>
+        </section>
+      </div>
+      <footer class="footer"><span>✚ MediCare Pharmacy Management</span><span>Made for learning · <button class="text-btn" data-goto="about">Project credits</button></span></footer>
+    </main>
+  </div>
+
+  <dialog id="entity-dialog" class="modal"><form id="entity-form" method="dialog"><div class="modal-head"><div><span class="eyebrow" id="modal-eyebrow">RECORD</span><h2 id="modal-title">Add record</h2></div><button type="button" id="modal-close" class="icon-btn" aria-label="Close dialog">×</button></div><div id="modal-fields" class="modal-fields"></div><div class="modal-actions"><button type="button" id="modal-cancel" class="btn btn-secondary">Cancel</button><button type="submit" id="modal-save" class="btn btn-primary">Save record</button></div></form></dialog>
+  <dialog id="invoice-dialog" class="modal invoice-modal"><div id="invoice-print-area"></div><div class="modal-actions no-print"><button id="invoice-close" class="btn btn-secondary">Close</button><button id="invoice-print" class="btn btn-primary">Print invoice</button></div></dialog>
+  <script src="app.js"></script>
+</body>
+</html>
